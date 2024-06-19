@@ -66,9 +66,42 @@ export default function Index() {
         "Produto",
         `Produto criado com sucesso. ID: ${response.insertedRowId}`
       )
+
+      setName("")
+      setQuantity("")
     } catch (error) {
       console.log("error", error)
     }
+  }
+
+  async function handleUpdateDatabase() {
+    try {
+      if (isNaN(Number(quantity))) {
+        return Alert.alert("Quantidade", "A quantidade precisa ser um número.")
+      }
+
+      const response = await database.update({
+        id: Number(id),
+        name,
+        quantity: Number(quantity),
+      })
+
+      onListProducts()
+
+      Alert.alert("Produto", `Produto atualizado com sucesso. ID: ${id}`)
+
+      setId("")
+      setName("")
+      setQuantity("")
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+  function handleSetProduct(item: ProductDatabase) {
+    setId(String(item.id))
+    setName(item.name)
+    setQuantity(String(item.quantity))
   }
 
   useEffect(() => {
@@ -84,13 +117,16 @@ export default function Index() {
         onChangeText={setQuantity}
       />
       <Button title="Salvar" onPress={handleCreateDatabase} />
+      <Button title="Atualizar" onPress={handleUpdateDatabase} />
 
       <Input placeholder="Pesquisar" value={search} onChangeText={setSearch} />
 
       <FlatList
         data={products}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Product data={item} />}
+        renderItem={({ item }) => (
+          <Product data={item} onPress={() => handleSetProduct(item)} />
+        )}
         contentContainerStyle={styles.listContentContainerStyle}
       />
     </View>
