@@ -1,15 +1,31 @@
-import { useState } from "react"
-import { StyleSheet, Button, View, Alert } from "react-native"
+import { useEffect, useState } from "react"
+import {
+  StyleSheet,
+  Button,
+  View,
+  Alert,
+  FlatList,
+  Pressable,
+  Text,
+} from "react-native"
 
 import { Input } from "@/components/Input"
 
-import { useProductDatabase } from "@/database/use-product-database"
+import {
+  ProductDatabase,
+  useProductDatabase,
+} from "@/database/use-product-database"
+import { Product } from "@/components/Product"
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     padding: 32,
+    gap: 16,
+  },
+
+  listContentContainerStyle: {
     gap: 16,
   },
 })
@@ -19,8 +35,19 @@ export default function Index() {
 
   const [id, setId] = useState("")
   const [name, setName] = useState("")
+  const [search, setSearch] = useState("")
   const [quantity, setQuantity] = useState("")
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<ProductDatabase[]>([])
+
+  async function onListProducts() {
+    try {
+      const response = await database.searchByName(search)
+
+      setProducts(response)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
 
   async function handleCreateDatabase() {
     try {
@@ -33,6 +60,8 @@ export default function Index() {
         quantity: Number(quantity),
       })
 
+      onListProducts()
+
       Alert.alert(
         "Produto",
         `Produto criado com sucesso. ID: ${response.insertedRowId}`
@@ -42,12 +71,9 @@ export default function Index() {
     }
   }
 
-  async function onListProducts() {
-    try {
-    } catch (error) {
-      console.log("error", error)
-    }
-  }
+  useEffect(() => {
+    onListProducts()
+  }, [search])
 
   return (
     <View style={styles.container}>
@@ -58,6 +84,15 @@ export default function Index() {
         onChangeText={setQuantity}
       />
       <Button title="Salvar" onPress={handleCreateDatabase} />
+
+      <Input placeholder="Pesquisar" value={search} onChangeText={setSearch} />
+
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <Product data={item} />}
+        contentContainerStyle={styles.listContentContainerStyle}
+      />
     </View>
   )
 }
