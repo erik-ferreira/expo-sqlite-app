@@ -1,10 +1,18 @@
-import { Pressable, PressableProps, StyleSheet, Text } from "react-native"
+import {
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
 
 interface ProductProps extends PressableProps {
   data: {
     name: string
     quantity: number
   }
+  onDelete?: () => void
 }
 
 const styles = StyleSheet.create({
@@ -15,16 +23,21 @@ const styles = StyleSheet.create({
     gap: 12,
     flexDirection: "row",
   },
+  text: {
+    flex: 1,
+  },
 })
 
-expo
-
-export function Product({ data, ...rest }: ProductProps) {
+export function Product({ data, onDelete, ...rest }: ProductProps) {
   return (
     <Pressable style={styles.button} {...rest}>
-      <Text>
+      <Text style={styles.text}>
         {data.quantity} - {data.name}
       </Text>
+
+      <TouchableOpacity activeOpacity={0.7} onPress={onDelete}>
+        <MaterialIcons name="delete" size={24} color="#003366" />
+      </TouchableOpacity>
     </Pressable>
   )
 }

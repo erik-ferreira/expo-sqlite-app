@@ -104,6 +104,12 @@ export default function Index() {
     setQuantity(String(item.quantity))
   }
 
+  function handleDeleteProduct(id: number) {
+    database.remove(id)
+
+    onListProducts()
+  }
+
   useEffect(() => {
     onListProducts()
   }, [search])
@@ -125,7 +131,11 @@ export default function Index() {
         data={products}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Product data={item} onPress={() => handleSetProduct(item)} />
+          <Product
+            data={item}
+            onPress={() => handleSetProduct(item)}
+            onDelete={() => handleDeleteProduct(item.id)}
+          />
         )}
         contentContainerStyle={styles.listContentContainerStyle}
       />
