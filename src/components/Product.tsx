@@ -13,6 +13,7 @@ interface ProductProps extends PressableProps {
     quantity: number
   }
   onDelete?: () => void
+  onView?: () => void
 }
 
 const styles = StyleSheet.create({
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export function Product({ data, onDelete, ...rest }: ProductProps) {
+export function Product({ data, onDelete, onView, ...rest }: ProductProps) {
   return (
     <Pressable style={styles.button} {...rest}>
       <Text style={styles.text}>
@@ -37,6 +38,10 @@ export function Product({ data, onDelete, ...rest }: ProductProps) {
 
       <TouchableOpacity activeOpacity={0.7} onPress={onDelete}>
         <MaterialIcons name="delete" size={24} color="#003366" />
+      </TouchableOpacity>
+
+      <TouchableOpacity activeOpacity={0.7} onPress={onView}>
+        <MaterialIcons name="visibility" size={24} color="#003366" />
       </TouchableOpacity>
     </Pressable>
   )

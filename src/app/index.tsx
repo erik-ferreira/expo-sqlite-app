@@ -1,13 +1,6 @@
+import { router } from "expo-router"
 import { useEffect, useState } from "react"
-import {
-  StyleSheet,
-  Button,
-  View,
-  Alert,
-  FlatList,
-  Pressable,
-  Text,
-} from "react-native"
+import { StyleSheet, Button, View, Alert, FlatList } from "react-native"
 
 import { Input } from "@/components/Input"
 
@@ -134,6 +127,7 @@ export default function Index() {
           <Product
             data={item}
             onPress={() => handleSetProduct(item)}
+            onView={() => router.navigate(`/details/${item.id}`)}
             onDelete={() => handleDeleteProduct(item.id)}
           />
         )}
